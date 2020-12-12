@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <utility>
+#include <queue>
 
 template <typename T>
 class Graph
@@ -38,20 +39,20 @@ public:
         return numberOfNodes - 1;
     }
 
-    void dfs(int node)
+    void doDFS(int node)
     {
         std::vector<int> visited(numberOfNodes + 1, 0);
-        discover(node, visited);
+        dfs(node, visited);
         for (int i = 0; i < numberOfNodes; i++)
         {
             if (!visited[i])
             {
-                discover(i, visited);
+                dfs(i, visited);
             }
         }
     }
 
-    void discover(int node, std::vector<int> &visited)
+    void dfs(int node, std::vector<int> &visited)
     {
         visited[node] = 1;
         std::cout << node << std::endl;
@@ -63,14 +64,47 @@ public:
             }
             if (!visited[item.first])
             {
-                discover(item.first, visited);
+                dfs(item.first, visited);
+            }
+        }
+    }
+
+    void doBFS(int node)
+    {
+        std::vector<int> visited(numberOfNodes + 1, 0);
+        bfs(node, visited);
+        for (int i = 0; i < numberOfNodes; i++)
+        {
+            if (!visited[i])
+            {
+                bfs(i, visited);
+            }
+        }
+    }
+
+    void bfs(int node, std::vector<int> &visited)
+    {
+        std::queue<int> q;
+        q.push(node);
+        while (!q.empty())
+        {
+            int currNode = q.front();
+            std::cout << currNode << std::endl;
+            visited[currNode] = 1;
+            q.pop();
+            for (auto &item : vertices[currNode])
+            {
+                if (!visited[item.first])
+                {
+                    q.push(item.first);
+                }
             }
         }
     }
 
     bool detectCycles(int node)
     {
-        dfs(node);
+        doDFS(node);
         return cycleDetected ? true : false;
     }
 };
